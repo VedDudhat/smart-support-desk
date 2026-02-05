@@ -5,27 +5,28 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="40eac733-bf8c-4884-91a1-18ac7b35d447" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/smart support desk.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/main.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/models/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/models/customers.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/models/ticket.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/routes/auth.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/routes/customer.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/routes/dashboard.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/routes/ticket.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/schemas/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/schemas/customer.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/schemas/ticket.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/pages/customer.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/pages/dashboard.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/pages/ticket.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/streamlit_ui.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/schemas/user.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/api_client.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ui/streamlit_ui.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/ui/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/models/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/models/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/models/customers.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/models/customers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/models/ticket.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/models/ticket.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/routes/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/routes/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/routes/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/routes/auth.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/routes/customer.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/routes/customer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/routes/dashboard.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/routes/dashboard.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/routes/ticket.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/routes/ticket.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/schemas/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/schemas/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/schemas/customer.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/schemas/customer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/schemas/ticket.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/schemas/ticket.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/pages/customer.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/pages/dashboard.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/pages/ticket.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/streamlit_ui.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,6 +60,11 @@
         </map>
       </branch-storage>
     </excluded-from-favorite>
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="ROOT_SYNC" value="DONT_SYNC" />
   </component>
@@ -94,8 +100,9 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "final-release",
     "junie.onboarding.icon.badge.shown": "true",
     "last_opened_file_path": "D:/python training/flask tutorial/project/smart support desk",
     "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings",
@@ -174,5 +181,8 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$/../.." />
     </ignored-roots>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/smart_support_desk$main.coverage" NAME="main Coverage Results" MODIFIED="1770274114583" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
