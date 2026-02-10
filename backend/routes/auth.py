@@ -1,9 +1,8 @@
 from flask import Blueprint, request, jsonify
-from flask_login import login_user, logout_user, login_required, current_user
-from backend import db, login_manager
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, unset_jwt_cookies
+from backend import db
 from backend.models import Users
 
-@login_manager.user_loader
 def load_user(id):
     return Users.query.get(int(id))
 
@@ -53,31 +52,36 @@ def login():
     user = Users.query.filter_by(username=data.get('username')).first()
 
     if user and user.check_password(data.get('password')):
-        login_user(user, remember=True)
+        access_token = create_access_token(identity=str(user.id))
 
         return jsonify({
             'message': 'Logged in',
             'name': user.name,
-            'user_id': user.id
+            'user_id': user.id,
+            'access_token': access_token
         }), 200
 
     return jsonify({'error': 'Invalid credentials'}), 401
 
 
-@auth_bp.route('/api/logout')
-@login_required
+@auth_bp.route('/api/logout',methods=['POST'])
 def logout():
-    logout_user()
-    return jsonify({'message': 'Logged out'}), 200
+    response = jsonify({'message': 'Logged out'})
+    unset_jwt_cookies(response)
+    return response, 200
 
 
 @auth_bp.route('/api/check_auth', methods=['GET'])
+@jwt_required
 def check_auth():
-    if current_user.is_authenticated:
+    current_user_id = get_jwt_identity()
+    user = Users.query.get(int(current_user_id))
+
+    if user.is_authenticated:
         return jsonify({
             'authenticated': True,
-            'name': current_user.name,
-            'user_id': current_user.id
+            'name': user.name,
+            'user_id': user.id
         }), 200
     else:
         return jsonify({'authenticated': False}), 401

@@ -3,28 +3,24 @@ import streamlit as st
 
 BASE_URL = "http://127.0.0.1:5000"
 
-session = requests.Session()
-
-def get_session():
-    if 'requests_session' not in st.session_state:
-        st.session_state.requests_session = requests.Session()
-    return st.session_state.requests_session
 
 def api_request(method, endpoint, payload=None, params=None):
-    session = get_session()
     url = BASE_URL + endpoint
-    try:
+    headers = {"Content-Type": "application/json"}
 
+    if 'jwt_token' in st.session_state and st.session_state.jwt_token:
+        headers["Authorization"] = f"Bearer {st.session_state.jwt_token}"
+
+    try:
         if method.upper() == 'GET':
-            response = session.get(url, params=params, timeout=10)
+            response = requests.get(url, params=params, headers=headers, timeout=10)
         elif method.upper() == 'POST':
-            response = session.post(url, json=payload, timeout=10)
+            response = requests.post(url, json=payload, headers=headers, timeout=10)
         elif method.upper() == 'PUT':
-            response = session.put(url, json=payload, timeout=10)
+            response = requests.put(url, json=payload, headers=headers, timeout=10)
         elif method.upper() == 'DELETE':
-            response = session.delete(url, timeout=10)
+            response = requests.delete(url, headers=headers, timeout=10)
         else:
-            st.error(f"Unsupported HTTP method: {method}")
             return None
 
         return response
@@ -41,8 +37,11 @@ def api_request(method, endpoint, payload=None, params=None):
 
 
 def check_session():
+    if 'jwt_token' not in st.session_state:
+        return False, None
+    headers = {"Authorization": f"Bearer {st.session_state.jwt_token}"}
     try:
-        response = session.get(BASE_URL + "/api/check_auth", timeout=5)
+        response = requests.get(BASE_URL + "/api/check_auth", timeout=5)
         if response.status_code == 200:
             data = response.json()
             return True, data.get("name")
@@ -51,5 +50,7 @@ def check_session():
         return False, None
 
 def clear_session():
-    if 'requests_session' in st.session_state:
-        del st.session_state.requests_session
+    if 'jwt_token' in st.session_state:
+        del st.session_state.jwt_token
+    if 'user' in st.session_state:
+        del st.session_state.user

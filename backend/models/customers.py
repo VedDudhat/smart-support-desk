@@ -6,11 +6,12 @@ from backend import db
 class Customers(UserMixin, db.Model):
     __tablename__ = 'customers'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(256), index=True, nullable=False)
+    firstname = db.Column(db.String(128), index=True, nullable=False)
+    lastname = db.Column(db.String(128), index=True, nullable=True)
     email = db.Column(db.String(256), index=True, unique=True, nullable=False)
     company = db.Column(db.String(256), index=True, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    tickets = db.relationship('Tickets', backref='customer', lazy='dynamic')
+    phone = db.Column(db.String(128), index=True, nullable=True)
 
 
 class Users(UserMixin, db.Model):

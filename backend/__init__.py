@@ -1,19 +1,20 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager
 from flask_cors import CORS
+from flask_jwt_extended import JWTManager
 
-# CRM_SERVICE_URL = "http://127.0.0.1:8000/integrate/ticket"
+CRM_SERVICE_URL = "http://127.0.0.1:8000/integrate/ticket"
+CUSTOMER_SERVICE_URL = "http://127.0.0.1:8000/integrate/customer"
 app = Flask(__name__)
-app.secret_key = 'super secret key'
+app.config["JWT_SECRET_KEY"] = "super-secret-key"
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:root@localhost:3306/ssd'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+
+jwt = JWTManager(app)
 
 CORS(app, supports_credentials=True)
 
 db = SQLAlchemy(app)
-login_manager = LoginManager(app)
-login_manager.init_app(app)
 
 
 from backend.routes.auth import auth_bp

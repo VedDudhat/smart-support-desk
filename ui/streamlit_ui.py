@@ -164,9 +164,21 @@ def register_view():
                         st.success("✅ Account created! Please log in.")
                         time.sleep(1)
                         navigate_to('login')
-                    else:
-                        error_msg = resp.json().get('error', 'Registration failed')
-                        st.error(f"⚠️ {error_msg}")
+                        # NEW FIXED CODE
+                        if resp.status_code == 201:
+                            st.success("Registration successful! Please login.")
+                        else:
+                            try:
+
+                                error_msg = resp.json().get('error', 'Registration failed')
+                            except ValueError:
+                                st.error(f"Server Error (Status {resp.status_code}):")
+                                if resp.text.strip().startswith("<"):
+                                    st.text("The backend returned an HTML error page instead of JSON.")
+                                    with st.expander("See Backend Error Details"):
+                                        st.code(resp.text[:500])
+                                else:
+                                    st.error(f"Error: {resp.text}")
 
 
 def login_view():
@@ -191,6 +203,7 @@ def login_view():
                     elif resp.status_code == 200:
                         data = resp.json()
                         st.session_state.user = data.get('name')
+                        st.session_state.jwt_token = data.get('access_token')
                         st.success(f"Welcome, {st.session_state.user}!")
                         time.sleep(0.5)
                         navigate_to('dashboard')
@@ -213,12 +226,10 @@ def dashboard_view():
             st.rerun()
     with c_logout:
         if st.button("Logout", type="primary"):
-            # Call logout API
-            api_request('GET', '/api/logout')
-            # Clear session state
+            if 'jwt_token' in st.session_state:
+                del st.session_state.jwt_token
             st.session_state.user = None
             st.session_state.current_view = 'home'
-            # Clear requests session
             clear_session()
             st.rerun()
 
@@ -360,7 +371,7 @@ def create_ticket(selection):
             st.warning("⚠️ No customers found. Please go to 'Customer Ops' and create a customer first.")
         else:
             customer_map = {
-                f"{c['name']} ({c['email']})": c['id']
+                f"{c['firstname']} {c.get('lastname', '')} ({c['email']})": c['id']
                 for c in customers
             }
 
@@ -416,8 +427,7 @@ def update_ticket(selection):
                 return
 
             ticket_map = {
-                f"{t['id']} - {t['title']}": t
-                for t in tickets
+                f"{t['id']} - {t['title']}": t for t in tickets
             }
 
             selected_ticket_label = st.selectbox(
@@ -430,12 +440,12 @@ def update_ticket(selection):
             ticket_id = ticket['id']
             current_cust_id = ticket.get('customer_id')
 
-            customer_map = {f"{c['name']} ({c['email']})": c['id'] for c in customers}
+            customer_map = {f"{c['firstname']} {c['lastname']} ({c['email']}) ({c['id']})": c for c in customers}
             cust_labels = list(customer_map.keys())
 
             current_cust_index = 0
             for i, label in enumerate(cust_labels):
-                if customer_map[label] == current_cust_id:
+                if customer_map[label]['id'] == current_cust_id:
                     current_cust_index = i
                     break
 
@@ -448,8 +458,8 @@ def update_ticket(selection):
 
                 priority = st.selectbox(
                     "Priority",
-                    ["Low", "Medium", "High"],
-                    index=["Low", "Medium", "High"].index(ticket["priority"])
+                    ["LOW", "MEDIUM", "HIGH"],
+                    index=["LOW", "MEDIUM", "HIGH"].index(ticket["priority"].upper())
                 )
 
                 selected_cust_label = st.selectbox(
@@ -466,7 +476,8 @@ def update_ticket(selection):
                         "status": status,
                         "priority": priority,
                         "description": desc,
-                        'customer_id': new_customer_id
+                        'customer_id': new_customer_id['id'],
+                        "email": new_customer_id['email']
                     }
                     update_resp = api_request('PUT', f'/api/tickets/{ticket_id}', payload)
 
@@ -481,7 +492,11 @@ def update_ticket(selection):
                         clear_session()
                         navigate_to('login')
                     else:
-                        st.error("Update failed. Please try again.")
+                        try:
+                            error_detail = update_resp.json().get('error', update_resp.text)
+                            st.error(f"Backend Error: {error_detail}")
+                        except:
+                            st.error(f"Server crashed with status 500. Check Flask console logs.")
         elif resp and resp.status_code == 401:
             st.error("⚠️ Session expired. Please log in again.")
             time.sleep(2)
@@ -551,7 +566,7 @@ def view_customer(selection):
 
         if customers:
             df = pd.DataFrame(customers)
-            desired_order = ['id', 'name', 'email', 'company']
+            desired_order = ['id', 'firstname','lastname', 'email', 'phone','company']
 
             cols_to_show = [c for c in desired_order if c in df.columns]
             st.dataframe(df[cols_to_show])
@@ -564,19 +579,23 @@ def create_customer(selection):
         st.header("➕ Create New Customer")
 
         with st.form("create_customer_form"):
-            name = st.text_input("Customer Name")
+            firstname = st.text_input("Customer firstname")
+            lastname  = st.text_input("Customer lastname")
             email = st.text_input("Email")
             company = st.text_input("Company")
+            phone = st.text_input("Phone Number")
             submitted = st.form_submit_button("Create Customer", use_container_width=True)
 
             if submitted:
-                if not name or not email:
-                    st.error("Name and Email are required.")
+                if not firstname or not email:
+                    st.error("firstname and Email are required.")
                 else:
                     payload = {
-                        "name": name,
+                        "firstname": firstname,
+                        'lastname': lastname,
                         "email": email,
-                        "company": company
+                        "company": company,
+                        'phone': phone,
                     }
 
                     resp = api_request('POST', '/api/add_customers', payload)
@@ -603,7 +622,7 @@ def update_customer(selection):
             return
 
         customer_map = {
-            f"{c['name']} ({c['email']})": c['name']
+            f"{c['firstname']} {c['lastname']} ({c['email']})": c['firstname']
             for c in customers
         }
 
@@ -614,17 +633,19 @@ def update_customer(selection):
         )
 
         customer_name = customer_map[selected_customer_label]
-        selected_customer = next((c for c in customers if c['name'] == customer_name), None)
+        selected_customer = next((c for c in customers if c['firstname'] == customer_name), None)
 
         if selected_customer:
             with st.form("update_customer_form"):
                 email = st.text_input("Email", value=selected_customer.get('email', ''))
+                phone = st.text_input("Phone Number", value=selected_customer.get('phone', ''))
                 company = st.text_input("Company", value=selected_customer.get('company', ''))
 
                 if st.form_submit_button("Update Customer", use_container_width=True):
                     payload = {
                         "email": email,
-                        "company": company
+                        "company": company,
+                        'phone': phone,
                     }
 
                     resp = api_request('PUT', f'/api/update_customers/{customer_name}', payload)
@@ -634,7 +655,13 @@ def update_customer(selection):
                         time.sleep(0.5)
                         st.rerun()
                     else:
-                        st.error("Update failed. Please try again.")
+                        if resp is not None:
+                            try:
+                                error_msg = resp.json().get('error', f"Error code: {resp.status_code}")
+                            except:
+                                error_msg = f"Update Customer failed: Error Code {resp.status_code}"
+
+                            st.error(f"❌ {error_msg}")
 
 
 def delete_customer(selection):
@@ -648,7 +675,7 @@ def delete_customer(selection):
             return
 
         customer_map = {
-            f"{c['name']} ({c['email']})": c['name']
+            f"{c['firstname']} {c['lastname']} ({c['email']})": c['firstname']
             for c in customers
         }
 
