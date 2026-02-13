@@ -1,110 +1,74 @@
-🔗 HubSpot CRM Integration Service
-This project is a standalone FastAPI microservice designed to synchronize data between a local Help Desk system and HubSpot CRM. It handles the synchronization of Contacts and Tickets, ensuring that support agents and sales teams always see the same up-to-date information.
+# Smart Support Desk
+The Smart Support Desk is a full-stack ticketing system designed to help support teams manage customer issues efficiently. It features a robust Flask API backend for data management and a modern Streamlit frontend for the agent interface.
 
-1. Which CRM I Chose & Why
-I chose HubSpot CRM for this integration.
+# 1. What This Service Does
+This application serves as the central hub for support agents. It allows them to:
 
-Why HubSpot?
-Developer-Friendly API: HubSpot offers a robust, well-documented REST API (v3) with clear endpoints for standard objects like Contacts and Tickets.
-Free Tier Access: The CRM functionality is available for free, making it ideal for development and testing without incurring costs.
-Scalability: It supports custom properties and high API rate limits, which mimics a real-world enterprise environment.
-Comprehensive Ecosystem: It includes built-in tools for email tracking, ticketing pipelines, and customer management, providing a complete "backend" for a support desk.
+Manage Tickets: Create, view, update, and search for support tickets.
+Customer Management: Register and maintain customer profiles.
+Role-Based Access: Secure login for Agents and Admins.
+Status Tracking: Track ticket lifecycle (Open -> In Progress -> Closed) and priority levels (Low, Medium, High).
+Database Persistence: All data is securely stored in a MySQL database using SQLAlchemy ORM.
 
-2. Configuration & Setup
+# 2. How to Set It Up Locally
 Prerequisites
-Python 3.9+
-
-A HubSpot Developer Account (or a standard account with a Private App created)
-
+Python 3.10+
+MySQL Server (or SQLite for testing)
 pip (Python Package Manager)
 
-Installation
+# Installation Steps
 Clone the Repository:
-
-Bash
 git clone <your-repo-url>
-cd CRM-integration
-Create a Virtual Environment:
+cd smart-support-desk
 
-Bash
+# Create a Virtual Environment:
 python -m venv venv
 # Windows:
 venv\Scripts\activate
 # Mac/Linux:
 source venv/bin/activate
-Install Dependencies:
 
-Bash
+# Install Dependencies:
 pip install -r requirements.txt
-Setting up Credentials
-Create a file named .env in the root directory.
 
-Add your HubSpot Private App Access Token:
+# Configure Environment Variables: Create a .env file in the root directory and add your database credentials:
+SECRET_KEY=your_secret_key_here
+SQLALCHEMY_DATABASE_URI=mysql+pymysql://user:password@localhost/support_desk_db
+# Or for SQLite: sqlite:///site.db
 
-Code snippet
-HUBSPOT_ACCESS_TOKEN=pat-na1-blablabla...
-HUBSPOT_BASE_URL=https://api.hubapi.com
-To get your token: Go to HubSpot Settings > Integrations > Private Apps > Create a Private App.
+# Initialize the Database: Run the following commands to create the necessary tables:
+flask db init
+flask db migrate -m "Initial migration"
+flask db upgrade
 
-# Scopes required:
+#  How to Start the Application
+You need to run the Backend and Frontend in two separate terminals.
 
-crm.objects.contacts.read
+Terminal 1: Start the Backend (Flask API)
+This powers the API that the frontend talks to.
+# Make sure your virtual environment is active
+flask run --port 5000
 
-crm.objects.contacts.write
-
-crm.objects.tickets.read
-
-crm.objects.tickets.write
-
-# How to Run the Sync & What to Expect
-This service acts as a bridge. It does not run a continuous background loop; instead, it provides REST API endpoints that the main Support Desk application calls whenever data needs to be synced.
-Start the Server
-#Run the FastAPI server using Uvicorn:
-uvicorn main:app --reload --port 8000
-The API will be available at: http://localhost:8000
-Interactive API Docs (Swagger UI): http://localhost:8000/docs
-Action,API Endpoint,Behavior
-Create Contact,POST /integrate/contact,"Creates a contact in HubSpot. If the email already exists, it returns the existing HubSpot ID to prevent duplicates."
-Get Contact,GET /integrate/contact/{email},"Fetches contact details (ID, Name, Company) from HubSpot using the email address."
-Create Ticket,POST /integrate/ticket,Creates a ticket in HubSpot and automatically associates it with the correct Contact ID.
-Update Ticket,PATCH /integrate/ticket/{id},"Updates ticket status, priority, or description in HubSpot when changed in the local app."
-
-Testing the Sync Manually
-You can test the synchronization without the main app by using curl or Postman:
-
-# Sync a New Ticket
-curl -X 'POST' \
-  'http://localhost:8000/integrate/ticket' \
-  -H 'Content-Type: application/json' \
-  -d '{
-  "title": "Login Issue",
-  "description": "User cannot reset password",
-  "priority": "HIGH",
-  "email": "customer@example.com"
-}'
-
-# Expected Output:
-{
-  "hubspot_ticket_id": "123456789",
-  "status": "created",
-  "link": "https://app.hubspot.com/contacts/..."
-}
+Terminal 2: Start the Frontend (Streamlit App)
+This launches the user interface for agents.
+# Open a new terminal, activate venv, then run:
+streamlit run ui/streamlit_ui.py
 
 # Project Structure
-CRM-integration/
-├── main.py              # Entry point for FastAPI application
-├── requirements.txt     # Python dependencies
-├── .env                 # Environment variables (GitIgnored)
-└── routes/
-    ├── contacts.py      # Endpoints for syncing Customer data
-    └── tickets.py       # Endpoints for syncing Support Tickets
+smart-support-desk/
+├── backend/             # Flask Backend Logic
+│   ├── routes/          # API Endpoints (Auth, Tickets, Customers)
+│   ├── models/          # Database Models (SQLAlchemy)
+│   └── __init__.py      # App Factory
+├── ui/                  # Streamlit Frontend
+│   ├── streamlit_ui.py  # Main UI Entry Point
+│   └── ...
+├── migrations/          # Database Migration Scripts
+├── requirements.txt     # Python Dependencies
+├── .env                 # Secrets (Not committed to Git)
+└── app.py               # Application Entry Point
 
-# Key Functionalities
-Contact Resolution: Automatically checks if a contact exists in HubSpot before creating a ticket. If not, it creates the contact first.
-
-Ticket Association: Links every support ticket to the correct customer record in HubSpot, maintaining a clean history of interactions.
-
-Real-time Updates: Changes made to ticket status or priority are pushed immediately to HubSpot via the PATCH endpoint.
-
-Error Handling: Gracefully handles API rate limits and "Contact Not Found" errors, returning meaningful messages to the client.
-
+# Tech Stack
+Backend: Python, Flask, Flask-SQLAlchemy, Flask-Migrate
+Frontend: Streamlit, Requests
+Database: MySQL (Production) / SQLite (Dev)
