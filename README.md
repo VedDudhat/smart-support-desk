@@ -46,7 +46,7 @@ HUBSPOT_ACCESS_TOKEN=pat-na1-blablabla...
 HUBSPOT_BASE_URL=https://api.hubapi.com
 To get your token: Go to HubSpot Settings > Integrations > Private Apps > Create a Private App.
 
-Scopes required:
+# Scopes required:
 
 crm.objects.contacts.read
 
@@ -56,10 +56,10 @@ crm.objects.tickets.read
 
 crm.objects.tickets.write
 
-How to Run the Sync & What to Expect
+# How to Run the Sync & What to Expect
 This service acts as a bridge. It does not run a continuous background loop; instead, it provides REST API endpoints that the main Support Desk application calls whenever data needs to be synced.
 Start the Server
-Run the FastAPI server using Uvicorn:
+#Run the FastAPI server using Uvicorn:
 uvicorn main:app --reload --port 8000
 The API will be available at: http://localhost:8000
 Interactive API Docs (Swagger UI): http://localhost:8000/docs
@@ -72,7 +72,7 @@ Update Ticket,PATCH /integrate/ticket/{id},"Updates ticket status, priority, or 
 Testing the Sync Manually
 You can test the synchronization without the main app by using curl or Postman:
 
-Example: Sync a New Ticket
+# Sync a New Ticket
 curl -X 'POST' \
   'http://localhost:8000/integrate/ticket' \
   -H 'Content-Type: application/json' \
@@ -83,14 +83,14 @@ curl -X 'POST' \
   "email": "customer@example.com"
 }'
 
-Expected Output:
+# Expected Output:
 {
   "hubspot_ticket_id": "123456789",
   "status": "created",
   "link": "https://app.hubspot.com/contacts/..."
 }
 
-Project Structure
+# Project Structure
 CRM-integration/
 ├── main.py              # Entry point for FastAPI application
 ├── requirements.txt     # Python dependencies
@@ -99,7 +99,7 @@ CRM-integration/
     ├── contacts.py      # Endpoints for syncing Customer data
     └── tickets.py       # Endpoints for syncing Support Tickets
 
-Key Functionalities
+# Key Functionalities
 Contact Resolution: Automatically checks if a contact exists in HubSpot before creating a ticket. If not, it creates the contact first.
 
 Ticket Association: Links every support ticket to the correct customer record in HubSpot, maintaining a clean history of interactions.
@@ -107,3 +107,4 @@ Ticket Association: Links every support ticket to the correct customer record in
 Real-time Updates: Changes made to ticket status or priority are pushed immediately to HubSpot via the PATCH endpoint.
 
 Error Handling: Gracefully handles API rate limits and "Contact Not Found" errors, returning meaningful messages to the client.
+
