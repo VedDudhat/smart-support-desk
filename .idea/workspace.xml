@@ -48,6 +48,12 @@
         </map>
       </branch-storage>
     </excluded-from-favorite>
+    <option name="PUSH_TAGS">
+      <GitPushTagMode>
+        <option name="argument" value="--tags" />
+        <option name="title" value="All" />
+      </GitPushTagMode>
+    </option>
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
         <entry key="$PROJECT_DIR$" value="pre-final-release" />
@@ -62,12 +68,12 @@
     &quot;assignee&quot;: &quot;VedDudhat&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/VedDudhat/Flask-todo.git&quot;,
-    &quot;accountId&quot;: &quot;03d3a38e-88d7-4126-bfb2-e1baf52a7fb7&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/VedDudhat/smart-support-desk.git",
+    "accountId": "e8af81db-dd88-4f71-a4e1-f621a6684580"
   }
-}</component>
+}]]></component>
   <component name="McpProjectServerCommands">
     <commands />
     <urls />
@@ -91,7 +97,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "final-release",
+    "git-widget-placeholder": "main",
     "junie.onboarding.icon.badge.shown": "true",
     "last_opened_file_path": "D:/python training/flask tutorial/project/smart support desk",
     "node.js.detected.package.eslint": "true",
@@ -156,7 +162,7 @@
       <workItem from="1770612667539" duration="47775000" />
       <workItem from="1770815791625" duration="13795000" />
       <workItem from="1770886750174" duration="1704000" />
-      <workItem from="1770888995174" duration="17554000" />
+      <workItem from="1770888995174" duration="17913000" />
     </task>
     <task id="LOCAL-00001" summary="smart dashboard with all the services">
       <option name="closed" value="true" />
@@ -190,7 +196,39 @@
       <option name="project" value="LOCAL" />
       <updated>1770982878669</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="final release with all functionalities working">
+      <option name="closed" value="true" />
+      <created>1770983239503</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1770983239503</updated>
+    </task>
+    <task id="LOCAL-00006" summary="final release with all functionalities working">
+      <option name="closed" value="true" />
+      <created>1770983293456</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1770983293456</updated>
+    </task>
+    <task id="LOCAL-00007" summary="final release with all functionalities working">
+      <option name="closed" value="true" />
+      <created>1770983392411</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1770983392412</updated>
+    </task>
+    <task id="LOCAL-00008" summary="final release with all functionalities working">
+      <option name="closed" value="true" />
+      <created>1770983480510</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1770983480510</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
