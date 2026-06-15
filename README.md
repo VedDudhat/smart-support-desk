@@ -1,74 +1,332 @@
-# Smart Support Desk
-The Smart Support Desk is a full-stack ticketing system designed to help support teams manage customer issues efficiently. It features a robust Flask API backend for data management and a modern Streamlit frontend for the agent interface.
+# CRM Integration Service
 
-# 1. What This Service Does
-This application serves as the central hub for support agents. It allows them to:
+## Overview
 
-Manage Tickets: Create, view, update, and search for support tickets.
-Customer Management: Register and maintain customer profiles.
-Role-Based Access: Secure login for Agents and Admins.
-Status Tracking: Track ticket lifecycle (Open -> In Progress -> Closed) and priority levels (Low, Medium, High).
-Database Persistence: All data is securely stored in a MySQL database using SQLAlchemy ORM.
+CRM Integration Service is a FastAPI-based backend application that synchronizes customer and ticket data with HubSpot CRM. It acts as a middleware layer between internal support systems and HubSpot, enabling seamless customer management, ticket creation, ticket association, and AI-powered support workflows.
 
-# 2. How to Set It Up Locally
-Prerequisites
-Python 3.10+
-MySQL Server (or SQLite for testing)
-pip (Python Package Manager)
+The project provides APIs for:
 
-# Installation Steps
-Clone the Repository:
-git clone <your-repo-url>
-cd smart-support-desk
+- Customer Management
+- Ticket Management
+- HubSpot CRM Synchronization
+- AI Assistant Integration
+- Redis-Based Caching
+- Rate Limiting and API Protection
 
-# Create a Virtual Environment:
+---
+
+## Features
+
+### Customer Operations
+- Create HubSpot contacts
+- Update existing contacts
+- Search contacts by email
+- Store HubSpot contact mappings in Redis cache
+
+### Ticket Operations
+- Create support tickets in HubSpot
+- Associate tickets with existing contacts
+- Manage ticket priorities
+- Track ticket status
+
+### AI Assistant
+- Natural language ticket management
+- Customer lookup assistance
+- Conversation memory support
+- LangChain & LangGraph integration
+- Google Gemini LLM support
+
+### Performance & Security
+- Redis caching
+- API rate limiting
+- Environment variable configuration
+- CORS protection
+- Error handling and validation
+
+---
+
+## Technology Stack
+
+### Backend
+- FastAPI
+- Python 3.10+
+- Uvicorn
+
+### AI & LLM
+- LangChain
+- LangGraph
+- Google Gemini
+
+### CRM
+- HubSpot CRM API
+
+### Database & Cache
+- Redis
+
+### HTTP Client
+- HTTPX
+
+### Validation
+- Pydantic
+
+---
+
+## Project Structure
+
+```text
+CRM-Integration/
+│
+├── app.py
+├── requirement.txt
+├── .env
+│
+├── backend/
+│   ├── assistant/
+│   │   ├── ai_agent.py
+│   │   ├── ai_tools_customer_ops.py
+│   │   ├── ai_tools_ticket_ops.py
+│   │   ├── conversation_memory.py
+│   │   └── logic.py
+│   │
+│   ├── models/
+│   ├── routes/
+│   │   ├── customer.py
+│   │   ├── ticket.py
+│   │   └── chat.py
+│   │
+│   ├── schemas/
+│   └── redis.py
+│
+└── ui/
+    └── streamlit_ui.py
+```
+
+---
+
+## Environment Variables
+
+Create a `.env` file in the project root.
+
+```env
+# HubSpot
+HUBSPOT_API_KEY=your_hubspot_api_key
+HUBSPOT_BASE_URL=https://api.hubapi.com
+HUBSPOT_PORTAL_ID=your_portal_id
+
+# Redis
+REDIS_HOST=localhost
+REDIS_PORT=6379
+
+# Gemini
+GOOGLE_API_KEY=your_google_api_key
+```
+
+---
+
+## Installation
+
+### 1. Clone Repository
+
+```bash
+git clone <repository-url>
+cd CRM-Integration
+```
+
+### 2. Create Virtual Environment
+
+```bash
 python -m venv venv
-# Windows:
+```
+
+### Windows
+
+```bash
 venv\Scripts\activate
-# Mac/Linux:
+```
+
+### Linux / Mac
+
+```bash
 source venv/bin/activate
+```
 
-# Install Dependencies:
-pip install -r requirements.txt
+### 3. Install Dependencies
 
-# Configure Environment Variables: Create a .env file in the root directory and add your database credentials:
-SECRET_KEY=your_secret_key_here
-SQLALCHEMY_DATABASE_URI=mysql+pymysql://user:password@localhost/support_desk_db
-# Or for SQLite: sqlite:///site.db
+```bash
+pip install -r requirement.txt
+```
 
-# Initialize the Database: Run the following commands to create the necessary tables:
-flask db init
-flask db migrate -m "Initial migration"
-flask db upgrade
+---
 
-#  How to Start the Application
-You need to run the Backend and Frontend in two separate terminals.
+## Running the Application
 
-Terminal 1: Start the Backend (Flask API)
-This powers the API that the frontend talks to.
-# Make sure your virtual environment is active
-flask run --port 5000
+Start the FastAPI server:
 
-Terminal 2: Start the Frontend (Streamlit App)
-This launches the user interface for agents.
-# Open a new terminal, activate venv, then run:
-streamlit run ui/streamlit_ui.py
+```bash
+python app.py
+```
 
-# Project Structure
-smart-support-desk/
-├── backend/             # Flask Backend Logic
-│   ├── routes/          # API Endpoints (Auth, Tickets, Customers)
-│   ├── models/          # Database Models (SQLAlchemy)
-│   └── __init__.py      # App Factory
-├── ui/                  # Streamlit Frontend
-│   ├── streamlit_ui.py  # Main UI Entry Point
-│   └── ...
-├── migrations/          # Database Migration Scripts
-├── requirements.txt     # Python Dependencies
-├── .env                 # Secrets (Not committed to Git)
-└── app.py               # Application Entry Point
+or
 
-# Tech Stack
-Backend: Python, Flask, Flask-SQLAlchemy, Flask-Migrate
-Frontend: Streamlit, Requests
-Database: MySQL (Production) / SQLite (Dev)
+```bash
+uvicorn app:app --reload
+```
+
+The application will be available at:
+
+```text
+http://127.0.0.1:8000
+```
+
+---
+
+## API Endpoints
+
+### Health Check
+
+```http
+GET /
+```
+
+Response:
+
+```json
+{
+  "service": "CRM Integration Service",
+  "status": "running",
+  "version": "2.0.0"
+}
+```
+
+---
+
+### Customer APIs
+
+#### Create Customer
+
+```http
+POST /customers
+```
+
+Creates or updates a contact in HubSpot.
+
+---
+
+### Ticket APIs
+
+#### Create Ticket
+
+```http
+POST /tickets
+```
+
+Creates a support ticket and associates it with a HubSpot contact if available.
+
+---
+
+### Chat APIs
+
+#### Create Chat Session
+
+```http
+POST /chat/session
+```
+
+Creates a new AI assistant session.
+
+---
+
+## HubSpot Integration Flow
+
+```text
+User Request
+      │
+      ▼
+CRM Integration Service
+      │
+      ▼
+HubSpot CRM
+      │
+      ├── Contacts
+      └── Tickets
+```
+
+### Customer Creation Flow
+
+1. Receive customer details.
+2. Check if contact already exists.
+3. Update existing contact or create a new one.
+4. Store HubSpot ID mapping in Redis.
+
+### Ticket Creation Flow
+
+1. Receive ticket details.
+2. Create ticket in HubSpot.
+3. Find associated customer.
+4. Link ticket to contact.
+5. Return HubSpot ticket information.
+
+---
+
+## AI Assistant Capabilities
+
+The AI Assistant can:
+
+- Create tickets from natural language
+- Retrieve ticket information
+- Update ticket details
+- Search customer records
+- Maintain conversation history
+- Automate support workflows
+
+### Example Queries
+
+```text
+Create a high-priority ticket for login issues.
+
+Show all tickets for john@example.com.
+
+Update ticket 123 to Closed.
+
+Find customer by email.
+```
+
+---
+
+## Error Handling
+
+The service handles:
+
+- Invalid requests
+- Missing HubSpot credentials
+- Rate limit violations
+- API failures
+- Timeout exceptions
+- Validation errors
+
+---
+
+## Security
+
+- Environment variable based secrets
+- Redis-backed rate limiting
+- API validation using Pydantic
+- CORS configuration
+- HubSpot token protection
+
+---
+
+## Future Enhancements
+
+- OAuth-based HubSpot authentication
+- Dashboard analytics
+- Multi-CRM support
+- Ticket status synchronization
+- Automated ticket categorization
+- Vector database integration for AI memory
+
+---
+
+## Author
+
+Developed as a CRM integration and AI-powered support automation platform using FastAPI, HubSpot CRM, Redis, LangChain, and Google Gemini.
